@@ -1,0 +1,29 @@
+{
+  "source_url": "https://github.com/YuJie-0202/PBCNet2.0",
+  "official_commit": "b3563f119864e51177af363a690419214d624194",
+  "checkpoint_file": "PBCNet2.pth",
+  "checkpoint_sha256": "05089dc242057a2be88721a0a2c5e963292d4f9776abb3b934d736473da5330f",
+  "license": "MIT as declared in upstream README.md",
+  "source_sha256": {
+    "Graph2pickle.py": "f0ca13306279f7b0be032aa28b9e053813d5b1631d53d4a1d2c2df6f9aac3631",
+    "PBCNet2.pth": "05089dc242057a2be88721a0a2c5e963292d4f9776abb3b934d736473da5330f",
+    "README.md": "9148a79266ade66a94bd317243c779ae793612a2ea7b7e12787d0b99349d4382",
+    "model_code/Dataloader/dataloader.py": "d2a6c4d3c302e869d4aaf254c960e68547abab51f83a9733a94d1ce4e6cdb907",
+    "model_code/Finetune.py": "1f3ea5eae557c7211819caf98e36e2ff20ecf2c54fa14d27843fc946dbfc151d",
+    "model_code/Selection.py": "a53a90e963594c43579c2f057319791138f6ff5b58c3f67539be7d2b27d5e707",
+    "model_code/models/__init__.py": "c00e1350bba012e32809ec3e9320f565e3b50fe2e68166b39f47ef9c7f08043a",
+    "model_code/models/readout.py": "7b8ead906e88da761eb871e0b496aac815966aaf0d7520f451f175cc1b14a1ef",
+    "model_code/models/tensornet.py": "8ccec67df64f79365fe1902b150f4352a2c9cbd0d3861a585681abe421444905",
+    "model_code/models/utils.py": "01dadfbe473b6023388c9d7e75aeefbec9e10a986ef2c45dba0d1198ed0da7bb",
+    "model_code/models/wrappers.py": "da6926c42e59f115ee137175d9ecfda7eb53f9035396284ffb527cd13c926025",
+    "model_code/predict/predict.py": "3448df308d65029968f8a976a34aa0549d815ce88c26b0624a140767c853fe6a",
+    "model_code/train.py": "df86642f8a5d1982f76bd8a6240ec0013731bb2b05151550410f93e624282340",
+    "model_code/utilis/function.py": "c98f0867f5fb696f01d4ca553d1552880f593059b6584f0131a6f55fa2f5161d",
+    "model_code/utilis/initial.py": "dc650839956ff825f61262315885921e143f116c2172a9c496ccd6cb1c15f29f",
+    "model_code/utilis/scheduler.py": "8b47a197dd555cccad085d1f9ef191dfc75cd45c863c080674f1e9c1c4559621",
+    "model_code/utilis/trick.py": "5618b04cd3b88c9eac532149aabf0622183348a405227c34ce475024cc9e10e7",
+    "model_code/utilis/utilis.py": "6386a2d2aef6fba1b1dcf5ee6bedb3118ac730e6295cfff498dd952803b29d9c"
+  },
+  "acquisition": "Selective official raw files, each verified against pinned Git tree blob SHA-1",
+  "acquired_at_utc": "2026-11-12T08:08:47.8826524Z"
+}

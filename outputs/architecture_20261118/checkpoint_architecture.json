@@ -1,0 +1,53 @@
+{
+  "architecture": "esm_pbc_node_dualview_geometric_ban_rank_v1",
+  "checkpoint": "/mnt/c/baidunetdiskdownload/3/node_rank/runs/pdbbind2020_refined_20261118/model/best_validation.pt",
+  "checkpoint_sha256": "7df165086ad93476a32d8f9d8af515092a2c1120bc116212754b6baf6ddc87ca",
+  "config": {
+    "sequence_dim": 2560,
+    "atom_dim": 96,
+    "hidden_dim": 128,
+    "heads": 4,
+    "view_depths": [
+      2,
+      4
+    ],
+    "dropout": 0.1,
+    "radial_bins": 16,
+    "spatial_cutoff": 4.5,
+    "contact_cutoff": 5.0,
+    "contact_logit_boost": 1.0,
+    "ban_glimpses": 4,
+    "ban_rank": 32
+  },
+  "source_sha256": {
+    "model.py": "30e58a08f95b3a8e9e0270e70dfd0bf8c32911f3538f56f0d80600e0d151c5ec",
+    "graph.py": "d7eb18a6ea0b5f651af53434a9dcfc4f72f53b4284772cd121bd5edea164e792"
+  },
+  "training_task": "affinity_supervised_score",
+  "score_meaning": "unitless_affinity_supervised_score_not_probability",
+  "target_scaling": {
+    "mean": 6.089818516523797,
+    "std": 1.8012795140710813,
+    "source": "training_labels_only",
+    "std_unbiased": false,
+    "endpoints_pooled": true,
+    "endpoint_specific_normalization": false
+  },
+  "best_epoch": 13,
+  "trained_view_weights_by_type": {
+    "sequence": [
+      0.4996087849140167,
+      0.5003912448883057
+    ],
+    "ligand": [
+      0.5040827989578247,
+      0.4959172308444977
+    ],
+    "pocket": [
+      0.4978969097137451,
+      0.5021030902862549
+    ]
+  },
+  "task_parameters": 1365983,
+  "diagram_scale": 2
+}

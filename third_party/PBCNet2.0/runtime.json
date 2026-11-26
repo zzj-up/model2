@@ -1,0 +1,30 @@
+{
+  "python": "3.12.3",
+  "python_executable": "/home/dti/.venvs/pbcnet_compat/bin/python",
+  "packages": {
+    "torch": "2.8.0+cu128",
+    "dgl": "1.1.3",
+    "numpy": "1.26.4",
+    "scipy": "1.17.1",
+    "pandas": "2.2.3",
+    "rdkit": "2024.9.6",
+    "biopython": "1.83",
+    "networkx": "3.7"
+  },
+  "device": "cpu",
+  "dgl_ffi": "ctypes",
+  "dgl_wheel_sha256": "3fa4dde6e07768a2ca73f04fb8d3e585513f74987be911c4c1e97b94fedfcbe0",
+  "dgl_compatibility": "Official cp311 CPU wheel uses DGL_FFI=ctypes on Python3.12; Cython extension is unused; libdgl.so and source are unmodified",
+  "base_packages": "/home/dti/.venvs/dti/lib/python3.12/site-packages (read-only .pth import path)",
+  "official_model_class": "models.readout.PBCNetv2",
+  "embedding_dim": 96,
+  "tensor_layers": 3,
+  "parameters": 781121,
+  "checkpoint_sha256": "05089dc242057a2be88721a0a2c5e963292d4f9776abb3b934d736473da5330f",
+  "checks": [
+    "torch/dgl/Biopython/RDKit imports",
+    "DGL CPU graph construction",
+    "official Graph2pickle import",
+    "trusted official model load"
+  ]
+}

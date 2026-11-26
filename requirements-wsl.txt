@@ -1,0 +1,11 @@
+# PyTorch is installed separately from its official CUDA 12.8 index.
+numpy==1.26.4
+pandas==2.2.3
+scikit-learn==1.6.1
+rdkit==2024.9.6
+torch-geometric==2.6.1
+transformers==4.51.3
+accelerate==1.6.0
+safetensors==0.5.3
+tqdm==4.67.1
+ijson==3.4.0

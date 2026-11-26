@@ -1,0 +1,19 @@
+flowchart TD
+    S[官方冻结 ESM2<br/>逐残基 S：N_s × 2560]
+    L[官方冻结 PBCNet<br/>逐配体原子 L：N_l × 96]
+    P[官方冻结 PBCNet<br/>逐口袋原子 P：N_p × 96]
+    S --> G[分别投影为 128 维<br/>空间接触 + 结构序列映射异构图]
+    L --> G
+    P --> G
+    G --> A[2 层几何注意力传播<br/>局部接触增强]
+    G --> B[4 层几何注意力传播<br/>局部接触增强]
+    A --> F[双视图逐节点融合<br/>保留 S′ L′ P′]
+    B --> F
+    F --> R[按节点类型全局读出<br/>z_global：128 维]
+    F --> E[提取 L′ × P′ 接触原子对<br/>保留距离 + 5 Å 接触掩码]
+    E --> BAN[低秩双线性注意力 BAN<br/>距离编码 + 原子对交互池化<br/>z_BAN：128 维]
+    R --> C[拼接 z_global 与 z_BAN<br/>256 维]
+    BAN --> C
+    C --> O[单层 Linear 256→1<br/>每个配对一个无量纲 score]
+    O --> SORT[同一化合物的候选靶点<br/>按 score 降序排列]
+    SORT --> OUT[score / rank / candidate_count]
