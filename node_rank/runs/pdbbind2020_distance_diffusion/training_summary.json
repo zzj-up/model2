@@ -1,0 +1,59 @@
+{
+  "status": "complete",
+  "updated_at_utc": "2026-11-26T17:09:52.900608+00:00",
+  "architecture": "dualview_ligand_pocket_distance_diffusion_v1",
+  "phase": "complete",
+  "epoch": 51,
+  "epochs_requested": 50,
+  "training_steps": 11500,
+  "samples_seen": 91800,
+  "completed_epochs": 50,
+  "epoch_cursor": 0,
+  "train_samples": 1836,
+  "validation_samples": 395,
+  "best_epoch": 33,
+  "best_validation_combined_loss": 0.28800766736518013,
+  "holdout_used": false,
+  "data_audit": {
+    "train": {
+      "requested": 1836,
+      "used": 1836,
+      "failed": 0,
+      "manifest_sha256": "e83109eb19ec392b5849f802fe9f525ab4cb89394b2f650d7b9dcc337fe4b09b",
+      "index_sha256": "f84773e748f1e1ee854ab6c6f4df0f2aaf69cfb1f1c7029c0720012c12aba538",
+      "sample_payloads_sha256": "bf3071814c769cb916afd7fb0aa9a35ca46c48311d04b381cf3f7d474c61ba2d",
+      "proposal_within_4_angstrom": 1074,
+      "proposal_within_8_angstrom": 1732
+    },
+    "validation": {
+      "requested": 395,
+      "used": 395,
+      "failed": 0,
+      "manifest_sha256": "253430f5ff33ae251ec93a5fd9b4558021f27454c644d375c2004a0c4f7b861c",
+      "index_sha256": "1a4c542b5683088625fa4d236d692eb0b7c1bf6448233d9180a91aa7974a935b",
+      "sample_payloads_sha256": "4cc1415e21d2e5ba04207437459988e7bc0735229c0aa0ebe673a01e08beb3cd",
+      "proposal_within_4_angstrom": 251,
+      "proposal_within_8_angstrom": 369
+    },
+    "feature_policy": {
+      "schema": "model2_distance_data_v1",
+      "feature_source_sha256": "b2b247a8fdc300f7c9153815d3769c4cabd48517b0ee1a7738918bf99e824872",
+      "rdkit_version": "2024.09.6",
+      "max_anchors": 128,
+      "box_size": 22.0,
+      "num_conformers": 4,
+      "num_proposals": 64,
+      "rmsd_threshold": 0.75,
+      "seed": 20261125,
+      "pocket_policy": "protein_only_geometric_proposals_label_matches_nearest_candidate_known_pocket",
+      "conformer_policy": "isolated_etkdgv3_symmetry_aware_complete_linkage_rmsd_cluster_medoids",
+      "labels": "crystal_heavy_atom_distances_to_candidate_box_receptor_anchors_atom_matched"
+    },
+    "split_lock_sha256": "05c806c776ce56fd8cf788cbd7762f42755b9062c81a6ab928a2b720733baa3b",
+    "holdout_used": false,
+    "validation_pocket_policy": "nearest_receptor_only_proposal_to_native_ligand_center",
+    "negative_interaction_labels_used": false
+  },
+  "best_checkpoint_sha256": "30544d66ad746cbf081d12f62106de0fa7a5c5c7ecfeb228a5a46a31a4f2e59d",
+  "last_checkpoint_sha256": "b108ed6db3ad3416b709a4cc06d5e516e4bc471177a81ec4f20f5ff9e8e7daa9"
+}

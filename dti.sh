@@ -13,7 +13,12 @@ cd "$PROJECT_DIR"
 case "${1:-help}" in
   status|rank-status)
     shift
-    exec "$VENV_DIR/bin/python" -m node_rank.cli status "$@"
+    status_file="${1:-node_rank/runs/pdbbind2020_distance_diffusion/training_status.json}"
+    if [[ -f "$status_file" ]]; then
+      exec "$VENV_DIR/bin/python" -m json.tool "$status_file"
+    fi
+    echo 'No status file for the new Model 2 distance diffusion run.'
+    echo "Expected: $status_file"
     ;;
   fresh-status)
     shift
@@ -43,7 +48,11 @@ case "${1:-help}" in
     shift
     exec "$VENV_DIR/bin/python" -m node_rank.conformer_library "$@"
     ;;
-  rank-from-smiles)
+  rank-from-smiles|predict|rank-predict)
+    shift
+    exec "$VENV_DIR/bin/python" -m node_rank.rank_distance_smiles "$@"
+    ;;
+  legacy-rank-from-smiles)
     shift
     exec "$VENV_DIR/bin/python" -m node_rank.rank_from_smiles "$@"
     ;;
@@ -55,11 +64,11 @@ case "${1:-help}" in
     shift
     exec "$VENV_DIR/bin/python" -m node_rank.cli audit "$@"
     ;;
-  rank-train)
+  legacy-rank-train)
     shift
     exec "$VENV_DIR/bin/python" -m node_rank.train "$@"
     ;;
-  predict|rank-predict|evaluate-pdbbind)
+  legacy-rank-predict|evaluate-pdbbind)
     shift
     exec "$VENV_DIR/bin/python" -m node_rank.predict "$@"
     ;;
@@ -79,7 +88,15 @@ case "${1:-help}" in
     shift
     exec bash "$PROJECT_DIR/pbcnet_runtime.sh" -m fresh_dti.prepare_complex_features "$@"
     ;;
-  train-pdbbind)
+  distance-data)
+    shift
+    exec "$VENV_DIR/bin/python" -m node_rank.distance_data "$@"
+    ;;
+  distance-train|rank-train|train-pdbbind)
+    shift
+    exec "$VENV_DIR/bin/python" -m node_rank.train_distance_diffusion "$@"
+    ;;
+  legacy-train-pdbbind)
     shift
     exec "$VENV_DIR/bin/python" -m node_rank.train_pdbbind "$@"
     ;;
@@ -93,13 +110,10 @@ case "${1:-help}" in
     exit 2
     ;;
   help|-h|--help)
-    echo 'Current architecture: node_rank (per-residue ESM + per-atom PBC, 2/4 geometric attention, BAN + global concat + Linear).'
-    echo 'Current prediction: raw model scores and descending ranks within each compound (best trained checkpoint).'
-    echo 'Official frozen ESM2 and PBCNet2.0 pretraining is retained.'
-    echo 'Generate a library with conformer-library or rank targets from SMILES with rank-from-smiles.'
-    echo 'Usage: bash dti.sh {status|verify|init|conformer-library|rank-from-smiles|rank-candidate-features|rank-features|rank-audit|rank-train|rank-predict|rank-verify-workflow|python} [arguments]'
-    echo 'Aliases: predict / evaluate-pdbbind = rank-predict; train-pdbbind = node_rank.train_pdbbind.'
-    echo 'Previous version: fresh-status, fresh-init, fresh-verify, features-pbcnet, features-entities, features-complex.'
+    echo 'Model 2 uses 2/4-layer geometry attention for conditional distance diffusion and compound-to-target scoring.'
+    echo 'Usage: bash dti.sh {status|conformer-library|distance-data|distance-train|rank-from-smiles|python} [arguments]'
+    echo 'Aliases: rank-train / train-pdbbind = distance-train; predict / rank-predict = rank-from-smiles.'
+    echo 'Archived architecture tools: legacy-train-pdbbind, legacy-rank-from-smiles, legacy-rank-predict.'
     ;;
   *)
     echo "Unknown action: $1. Use bash dti.sh help." >&2

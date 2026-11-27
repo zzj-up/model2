@@ -1,0 +1,17 @@
+{
+  "status": "complete",
+  "updated_at_utc": "2026-11-26T17:09:52.900608+00:00",
+  "architecture": "dualview_ligand_pocket_distance_diffusion_v1",
+  "phase": "complete",
+  "epoch": 51,
+  "epochs_requested": 50,
+  "training_steps": 11500,
+  "samples_seen": 91800,
+  "completed_epochs": 50,
+  "epoch_cursor": 0,
+  "train_samples": 1836,
+  "validation_samples": 395,
+  "best_epoch": 33,
+  "best_validation_combined_loss": 0.28800766736518013,
+  "holdout_used": false
+}

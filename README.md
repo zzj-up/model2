@@ -1,55 +1,38 @@
-# model2
+# Model 2
 
-`model2` 在 `model1` 的基础上增加了独立配体构象库和基于 SMILES 的靶点排序入口。
+Model 2 用两条独立的 2 层和 4 层几何注意力分支，编码独立的配体构象和受体口袋。扩散模块对配体重原子到口袋锚点的距离矩阵加高斯噪声，由网络学习按时间步预测噪声。反向采样输出单位为 Å 的距离矩阵。距离导出可用于后续坐标拟合；本版本的输出是距离矩阵与靶点分数。
 
-## Git 仓库内容与运行环境
+共享的几何编码器还有一个单独的评分头。训练用亲和力标签监督该头，推理只输出无量纲 `score`，对同一个化合物的靶点按分数降序排列。每个靶点的分数为各簇代表构象分数的平均值。
 
-仓库包含模型代码、最佳评分权重、续训权重、初始化权重、训练指标和架构图。PBCNet2.0 的固定版本及上游来源记录位于 [`third_party/PBCNet2.0`](third_party/PBCNet2.0)。[PBCNet2.0 上游仓库](https://github.com/YuJie-0202/PBCNet2.0)
+## 公开权重
 
-PDBbind 数据、特征缓存和本地评估保存在原工作区。下面引用 `evaluation/` 的命令用于带有这些本地文件的工作区。新克隆可直接以自己的 SMILES 生成构象，提供受体结构和口袋清单后可运行靶点排序。原 PDBbind 筛选面板依赖原项目的锁定划分和结构目录。
+PDBbind 重训已完成 50 轮。默认推理加载第 33 轮的最佳验证权重 [best_validation.pt](node_rank/runs/pdbbind2020_distance_diffusion/best_validation.pt)。第 50 轮的 [last.pt](node_rank/runs/pdbbind2020_distance_diffusion/last.pt) 可与原训练配置和数据缓存配合续训。[训练指标](node_rank/runs/pdbbind2020_distance_diffusion/metrics.json) 和 [训练汇总](node_rank/runs/pdbbind2020_distance_diffusion/training_summary.json) 记录了这次训练的数据划分和检查点。训练数据、特征缓存和本地评估保存在原工作区。
 
-`DTI_VENV` 和 `PBCNET_VENV` 分别指定 WSL 中的模型运行环境和 PBCNet 兼容环境。`rank-from-smiles` 可通过 `--docking-python` 指定安装了 RDKit、Meeko 和 Vina 的 Python，并通过 `--esm-model` 指定本地 ESM2 权重目录。新靶点的 ESM2 特征提取使用 CUDA。
+## PDBbind 重训
 
-## 生成构象库
-
-在本目录的 WSL 中运行：
+在 WSL 的 `model2` 目录运行：
 
 ```bash
-bash dti.sh conformer-library \
-  --smiles '[NH3+][C@@H](CCC(=O)O)C(=O)O' \
-  --output-dir predictions/glutamate_conformers \
-  --num-conformers 32 --rmsd-threshold 0.75 --seed 20261125
+DISTANCE_RUN_DIR=node_rank/runs/pdbbind2020_distance_diffusion_new \
+  bash run_distance_pdbbind.sh --epochs 50 --device cuda
+bash dti.sh status node_rank/runs/pdbbind2020_distance_diffusion_new/training_status.json
 ```
 
-ETKDGv3 默认尝试生成 32 个构象。使用对齐后、考虑原子对称性的重原子 RMSD 做完全链接聚类，默认簇内任意两个构象的距离都不超过 0.75 Å。每簇选取与其他成员 RMSD 之和最小的真实成员，按原始坐标写入 `representatives.sdf`。`conformer_manifest.json` 记录种子、RDKit 版本、簇成员及代表编号。SMILES 应给定单一分子的立体化学和所需的质子化状态。
+默认沿用父项目中按化合物分组的锁定划分。1,836 个复合物用于训练，395 个用于验证，392 个留出。预处理记录每个集合的通过和失败数。PDBbind 数据在本地，`PDBBIND_SPLITS_DIR` 可指向原工作区的 `splits_v2`。训练使用独立生成的 ETKDGv3 配体构象。受体结构先独立生成候选口袋，再用晶体标签确定哪一个候选对应已知结合位置。模型使用该口袋和独立构象作为条件，晶体配体坐标用于生成距离监督。此设置评估的是指定口袋内的距离预测。
 
-## 用同一批代表构象给多个靶点排序
+`DTI_VENV` 可覆盖默认的 WSL Python 环境 `~/.venvs/dti`。`DISTANCE_CACHE_DIR`、`DISTANCE_RUN_DIR` 和 `DISTANCE_PREP_WORKERS` 分别配置缓存、运行目录和数据处理进程数。重新训练时使用尚未创建的运行目录。中断后保留对应目录内的 `run_config.json` 和 `last.pt`，用相同的运行目录及参数加 `--resume` 继续。
+
+## 给同一个化合物的候选靶点排序
 
 ```bash
 bash dti.sh rank-from-smiles \
   --smiles '[NH3+][C@@H](CCC(=O)O)C(=O)O' \
-  --targets evaluation/conformer_cluster_demo/targets.json \
-  --output-dir predictions/glutamate_targets --exhaustiveness 2 --device cpu
+  --targets path/to/targets.json \
+  --output-dir predictions/glutamate_targets --device cuda
 ```
 
-靶点清单是 JSON 数组，至少提供两个不同的蛋白序列。每条记录需要 `id`、`protein_sequence`、`protein_pdb`、`box_center` 和 `box_size`，可选 `target_name`、`protein_chain` 和 `receptor_pdbqt`。搜索盒使用受体坐标系的 XYZ，单位为 Å。结构相对路径从清单所在目录解析。受体准备遇到组氨酸质子化歧义时，可提供已在同一坐标系下准备好的 PDBQT。命令默认使用 `~/.venvs/docking_pb` 内的 Meeko 和 Vina，未缓存的蛋白序列仍由现有 CUDA ESM2 流程提取特征。
+靶点清单是包含至少两条不同蛋白序列的 JSON 数组。每条记录需提供 `id`、`protein_sequence`、`protein_pdb`、`box_center` 和 `box_size`，可选 `target_name` 与 `protein_chain`。口袋盒使用受体坐标系，单位为 Å。结构路径相对于清单解析。
 
-每次调用只生成一份构象库。每个受体复用该库，在独立搜索盒内只做刚性旋转和平移。Vina 在每个靶点内选出一个姿势供现有模型评分，`ranking/scores.csv` 按原始 `score` 降序列出同一化合物的候选靶点。`run.json` 记录姿势来源的构象簇及各靶点的处理状态，`poses/` 保存生成的姿势和日志。至少两个靶点成功放置后才进入多靶点排序。
+一次筛选为化合物生成一套 ETKDGv3 构象，按对齐后且考虑原子对称性的重原子 RMSD 聚类。每簇保留一个真实构象，供所有靶点复用。`ranking/scores.csv` 输出每个靶点的分数和名次。加 `--export-distances` 可为每个靶点的最高分簇导出距离矩阵和相应的口袋锚点坐标。
 
-示例结果见 [`validation/ranking/scores.csv`](evaluation/conformer_cluster_demo/validation/ranking/scores.csv)。4io2 和 5ogb 成功打分，2a5s 和 3fuz 因原始受体结构存在质子化歧义而跳过。示例用于验证流程是否能运行，排序性能需要另行评估。
-
-## 已有复合物的评分和训练权重
-
-默认评分权重为 `node_rank/runs/pdbbind2020_refined_20261118/model/best_validation.pt`（第 13 轮，2,990 次更新）。同目录有第 50 轮的续训权重 `last.pt`、训练配置及指标，`node_rank/checkpoints` 保留初始化。PBCNet2.0 的冻结权重和源码也在本副本内。
-
-在本目录的 WSL 中运行 `bash dti.sh status` 可加载本地默认权重。已验证的候选数据位于 `evaluation/model3_target_ranking_20261118/`，包含同一化合物在 12 个靶点上的结构与模型特征，可用以下命令输出原始分数和名次。
-
-```bash
-bash dti.sh rank-predict --features evaluation/model3_target_ranking_20261118/candidate_features.json --output-dir predictions/example --device cpu
-```
-
-`verification/ranking/scores.csv` 是备份时的核验结果，`verification/backup_validation.json` 记录与原模型对照的结论。`SNAPSHOT_SHA256.json` 记录加入构象流程前的文件校验值。
-
-本例打分使用副本内的特征。给新分子提取特征仍沿用本机 WSL Python 环境与 `/home/dti/models/esm2_3b`。`provenance/` 内的训练清单和索引保留原始字节，完整 PDBbind 结构与训练缓存继续位于原项目 `inputs/`。发起新训练时，可显式引用原始训练和验证索引，并将输出写到本副本的新运行目录。归档里的旧训练配置记录的是原路径。
-
-模型加载器校验架构源码的哈希。调整 `model.py` 或 `graph.py` 后，需使用与新结构对应的权重。老权重保留在这里作为比较基准。
+仅需构象库时可运行 `bash dti.sh conformer-library --smiles '<SMILES>' --output-dir predictions/conformers`。默认尝试 32 个构象，簇内 RMSD 阈值为 0.75 Å。

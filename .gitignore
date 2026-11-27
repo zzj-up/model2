@@ -17,11 +17,10 @@ __pycache__/
 !/outputs/architecture_20261118/
 
 /node_rank/runs/*
-!/node_rank/runs/pdbbind2020_refined_20261118/
-/node_rank/runs/pdbbind2020_refined_20261118/*
-!/node_rank/runs/pdbbind2020_refined_20261118/model/
-/node_rank/runs/pdbbind2020_refined_20261118/model/*
-!/node_rank/runs/pdbbind2020_refined_20261118/model/best_validation.pt
-!/node_rank/runs/pdbbind2020_refined_20261118/model/last.pt
-!/node_rank/runs/pdbbind2020_refined_20261118/model/metrics.json
-!/node_rank/runs/pdbbind2020_refined_20261118/model/training_summary.json
+!/node_rank/runs/pdbbind2020_distance_diffusion/
+/node_rank/runs/pdbbind2020_distance_diffusion/*
+!/node_rank/runs/pdbbind2020_distance_diffusion/best_validation.pt
+!/node_rank/runs/pdbbind2020_distance_diffusion/last.pt
+!/node_rank/runs/pdbbind2020_distance_diffusion/metrics.json
+!/node_rank/runs/pdbbind2020_distance_diffusion/training_status.json
+!/node_rank/runs/pdbbind2020_distance_diffusion/training_summary.json
